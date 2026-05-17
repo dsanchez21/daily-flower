@@ -50,7 +50,6 @@ export default function Home() {
           <blockquote className="quote">
             &quot;{quote.text}&quot;
           </blockquote>
-          <p className="author">— {quote.author}</p>
         </div>
 
         <p className="footer">
