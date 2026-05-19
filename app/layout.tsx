@@ -1,5 +1,19 @@
 import type { Metadata } from 'next';
+import { Outfit, Playfair_Display } from 'next/font/google';
 import './globals.css';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+  style: ['normal', 'italic'],
+});
 
 export const metadata: Metadata = {
   title: 'Tu Flor del Día',
@@ -16,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${outfit.variable} ${playfair.variable}`}>
       <body>{children}</body>
     </html>
   );

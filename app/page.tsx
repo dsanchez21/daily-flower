@@ -10,17 +10,16 @@ export default function Home() {
 
   useEffect(() => {
     // Calcular el número de días desde una fecha de referencia
-    // Usamos una fecha de referencia para que sea consistente
     const referenceDate = new Date('2026-01-01');
     const today = new Date();
-    
+
     // Resetear horas para comparar solo fechas
     today.setHours(0, 0, 0, 0);
     referenceDate.setHours(0, 0, 0, 0);
-    
+
     const msPerDay = 24 * 60 * 60 * 1000;
     const days = Math.floor((today.getTime() - referenceDate.getTime()) / msPerDay);
-    
+
     setDayNumber(Math.max(0, days));
     setMounted(true);
   }, []);
@@ -38,8 +37,22 @@ export default function Home() {
     day: 'numeric'
   });
 
+  // Calcular el tono base de la flor para iluminar el fondo
+  const seed = dayNumber;
+  const seededRandom = (index: number): number => {
+    const x = Math.sin(seed + index * 13.37) * 10000;
+    return x - Math.floor(x);
+  };
+  const mainHue = Math.floor(seededRandom(5) * 360);
+
   return (
-    <main className="container">
+    <main className="container" style={{ '--hue': mainHue } as React.CSSProperties}>
+      {/* Fondo Dinámico con Blobs */}
+      <div className="blob blob-1"></div>
+      <div className="blob blob-2"></div>
+      <div className="blob blob-3"></div>
+
+      {/* Tarjeta de Cristal */}
       <div className="content">
         <h1 className="title">Tu Flor del Día</h1>
         <p className="date">{dateString}</p>
@@ -48,119 +61,159 @@ export default function Home() {
 
         <div className="quote-container">
           <blockquote className="quote">
-            &quot;{quote.text}&quot;
+            {quote.text}
           </blockquote>
+          {quote.author && <div className="author">— {quote.author}</div>}
         </div>
 
         <p className="footer">
-          Cada día, una nueva flor para ti 🌸
+          Cada día, una nueva flor para ti 🌸<br />
+          Te amo Ruth.
         </p>
       </div>
 
       <style jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        body {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          min-height: 100vh;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         .container {
           min-height: 100vh;
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 20px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          overflow: hidden;
+          background-color: #f8fafc;
+        }
+
+        .blob {
+          position: absolute;
+          filter: blur(80px);
+          z-index: 0;
+          opacity: 0.6;
+          border-radius: 50%;
+          animation: blob 15s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+          top: -10%;
+          left: -10%;
+          width: 50vw;
+          height: 50vw;
+          background: hsl(var(--hue), 80%, 80%);
+          animation-delay: 0s;
+        }
+
+        .blob-2 {
+          bottom: -20%;
+          right: -10%;
+          width: 60vw;
+          height: 60vw;
+          background: hsl(calc(var(--hue) + 40), 80%, 75%);
+          animation-delay: -3s;
+        }
+
+        .blob-3 {
+          top: 40%;
+          left: 60%;
+          width: 40vw;
+          height: 40vw;
+          background: hsl(calc(var(--hue) - 30), 80%, 85%);
+          animation-delay: -6s;
         }
 
         .content {
-          background: white;
+          position: relative;
+          z-index: 1;
+          background: rgba(255, 255, 255, 0.45);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border: 1px solid rgba(255, 255, 255, 0.6);
           border-radius: 30px;
-          padding: 40px 30px;
-          max-width: 500px;
+          padding: 50px 40px;
+          max-width: 550px;
           width: 100%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
           text-align: center;
+          animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .title {
-          font-size: 2em;
-          color: #333;
-          margin-bottom: 10px;
-          font-weight: 700;
+          font-size: 2.2em;
+          color: #0f172a;
+          margin-bottom: 5px;
+          font-weight: 800;
+          letter-spacing: -0.5px;
         }
 
         .date {
-          color: #999;
-          font-size: 0.9em;
+          color: #64748b;
+          font-size: 1em;
           text-transform: capitalize;
           margin-bottom: 30px;
+          font-weight: 500;
         }
 
         .quote-container {
-          margin: 40px 0;
-          padding: 30px 20px;
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          border-radius: 20px;
-          border-left: 5px solid #667eea;
+          margin: 40px 0 20px 0;
+          padding: 0 20px;
+          position: relative;
+        }
+
+        .quote-mark {
+          position: absolute;
+          top: -50px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-family: var(--font-playfair), serif;
+          font-size: 140px;
+          color: rgba(0, 0, 0, 0.04);
+          z-index: -1;
+          line-height: 1;
+          user-select: none;
         }
 
         .quote {
-          font-size: 1.2em;
-          color: #333;
-          line-height: 1.6;
+          font-family: var(--font-playfair), serif;
+          font-size: 1.4em;
+          color: #334155;
+          line-height: 1.5;
           font-style: italic;
-          margin-bottom: 15px;
+          position: relative;
+          z-index: 1;
         }
 
         .author {
-          color: #666;
+          font-family: var(--font-outfit), sans-serif;
+          color: #64748b;
           font-size: 0.95em;
           font-weight: 600;
+          margin-top: 15px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
         }
 
         .footer {
-          color: #999;
+          color: #94a3b8;
           font-size: 0.9em;
-          margin-top: 30px;
+          margin-top: 40px;
+          font-weight: 500;
         }
 
         @media (max-width: 600px) {
           .content {
-            padding: 30px 20px;
-            border-radius: 20px;
+            padding: 40px 20px;
+            border-radius: 24px;
           }
 
           .title {
-            font-size: 1.5em;
+            font-size: 1.8em;
           }
 
           .quote {
-            font-size: 1em;
+            font-size: 1.2em;
           }
-
-          .container {
-            padding: 10px;
-          }
-        }
-
-        @media (max-width: 400px) {
-          .content {
-            padding: 20px 15px;
-          }
-
-          .title {
-            font-size: 1.3em;
-          }
-
-          .quote {
-            font-size: 0.9em;
+          
+          .blob {
+            filter: blur(50px);
           }
         }
       `}</style>
