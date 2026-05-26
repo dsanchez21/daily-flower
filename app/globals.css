@@ -28,13 +28,13 @@ body {
 }
 
 @keyframes sway {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2deg); }
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
 }
 
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  50% { transform: scale(1.015); }
 }
 
 @keyframes blob {
@@ -48,12 +48,49 @@ body {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes stemRise {
+  0% { stroke-dashoffset: 500; opacity: 0; }
+  10% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes leafGrow {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+@keyframes petalBloom {
+  0% { transform: scale(0) rotate(var(--petal-rotation, 0deg)); opacity: 0; }
+  70% { transform: scale(1.1) rotate(var(--petal-rotation, 0deg)); opacity: 1; }
+  100% { transform: scale(1) rotate(var(--petal-rotation, 0deg)); opacity: 0.9; }
+}
+
 .animate-sway {
-  animation: sway 5s ease-in-out infinite;
+  animation: sway 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   transform-origin: 50% 100%; /* bottom center for SVG */
 }
 
 .animate-breathe {
-  animation: breathe 4s ease-in-out infinite;
+  animation: breathe 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   transform-origin: 50% 50%; /* center for SVG */
+}
+
+.animate-stem {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: stemRise 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-leaf {
+  transform-origin: 50% 60%;
+  animation: leafGrow 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.animate-petal {
+  transform-origin: center;
+  animation: petalBloom 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+  transform: scale(0);
 }
