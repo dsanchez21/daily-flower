@@ -54,6 +54,15 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
         <stop offset="0%" stopColor={`hsl(${(mainHue + 60) % 360}, 90%, 70%)`} />
         <stop offset="100%" stopColor={centerColor} />
       </radialGradient>
+      <linearGradient id="stem-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#4a7c2a" />
+        <stop offset="50%" stopColor="#2d5016" />
+        <stop offset="100%" stopColor="#1a330a" />
+      </linearGradient>
+      <linearGradient id="leaf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#5aa033" />
+        <stop offset="100%" stopColor="#2d5016" />
+      </linearGradient>
     </defs>
   );
 
@@ -329,25 +338,26 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
       {/* Tallo orgánico */}
       <path
         className="animate-stem"
-        d={`M ${size / 2} ${size} Q ${size / 2 - 15} ${size * 0.6} ${size / 2 - 10} ${size * 0.2}`}
-        stroke="#2d5016"
-        strokeWidth="6"
-        fill="none"
-        strokeLinecap="round"
+        d={`M ${size/2 - 8} ${size} 
+            Q ${size/2 - 25} ${size*0.6} ${size/2 - 4} ${size*0.2}
+            L ${size/2 + 4} ${size*0.2}
+            Q ${size/2 - 13} ${size*0.6} ${size/2 + 8} ${size} Z`}
+        fill="url(#stem-grad)"
+        style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}
       />
 
       {/* Hojas orgánicas */}
-      <g className="animate-leaf" style={{ animationDelay: '0.5s' }}>
+      <g className="animate-leaf" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))' }}>
         <path
-          d={`M ${size/2} ${size*0.6} Q ${size/2 - 40} ${size*0.5} ${size/2 - 50} ${size*0.4} Q ${size/2 - 20} ${size*0.4} ${size/2} ${size*0.6}`}
-          fill="url(#petal-grad-dark)"
+          d={`M ${size/2 - 12} ${size*0.65} Q ${size/2 - 50} ${size*0.6} ${size/2 - 70} ${size*0.4} Q ${size/2 - 30} ${size*0.35} ${size/2 - 8} ${size*0.55}`}
+          fill="url(#leaf-grad)"
           opacity="0.95"
         />
       </g>
-      <g className="animate-leaf" style={{ animationDelay: '0.7s' }}>
+      <g className="animate-leaf" style={{ animationDelay: '0.7s', filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))' }}>
         <path
-          d={`M ${size/2} ${size*0.7} Q ${size/2 + 40} ${size*0.6} ${size/2 + 45} ${size*0.5} Q ${size/2 + 15} ${size*0.5} ${size/2} ${size*0.7}`}
-          fill="#3d6b23"
+          d={`M ${size/2 - 2} ${size*0.75} Q ${size/2 + 40} ${size*0.75} ${size/2 + 60} ${size*0.55} Q ${size/2 + 30} ${size*0.45} ${size/2 + 2} ${size*0.65}`}
+          fill="url(#leaf-grad)"
           opacity="0.95"
         />
       </g>
