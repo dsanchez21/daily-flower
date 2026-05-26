@@ -339,17 +339,34 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
       <path
         className="animate-stem"
         d={`M ${size/2 - 8} ${size} 
-            Q ${size/2 - 25} ${size*0.6} ${size/2 - 4} ${size*0.2}
-            L ${size/2 + 4} ${size*0.2}
-            Q ${size/2 - 13} ${size*0.6} ${size/2 + 8} ${size} Z`}
+            Q ${size/2 - 25} ${size*0.7} ${size/2 - 4} ${size*0.42}
+            L ${size/2 + 4} ${size*0.42}
+            Q ${size/2 - 13} ${size*0.7} ${size/2 + 8} ${size} Z`}
         fill="url(#stem-grad)"
         style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}
       />
 
+      {/* Receptáculo / Sépalo */}
+      <g style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}>
+        <path
+          d={`M ${size/2 - 4} ${size*0.42}
+              C ${size/2 - 15} ${size*0.4} ${size/2 - 25} ${size*0.36} ${size/2 - 35} ${size*0.3}
+              Q ${size/2 - 15} ${size*0.36} ${size/2} ${size*0.38}
+              Q ${size/2 + 15} ${size*0.36} ${size/2 + 35} ${size*0.3}
+              C ${size/2 + 25} ${size*0.36} ${size/2 + 15} ${size*0.4} ${size/2 + 4} ${size*0.42} Z`}
+          fill="url(#stem-grad)"
+        />
+        <path
+          d={`M ${size/2 - 8} ${size*0.39}
+              Q ${size/2} ${size*0.32} ${size/2 + 8} ${size*0.39} Z`}
+          fill="url(#leaf-grad)"
+        />
+      </g>
+
       {/* Hojas orgánicas */}
       <g className="animate-leaf" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))' }}>
         <path
-          d={`M ${size/2 - 12} ${size*0.65} Q ${size/2 - 50} ${size*0.6} ${size/2 - 70} ${size*0.4} Q ${size/2 - 30} ${size*0.35} ${size/2 - 8} ${size*0.55}`}
+          d={`M ${size/2 - 14} ${size*0.65} Q ${size/2 - 50} ${size*0.6} ${size/2 - 70} ${size*0.4} Q ${size/2 - 30} ${size*0.35} ${size/2 - 8} ${size*0.55}`}
           fill="url(#leaf-grad)"
           opacity="0.95"
         />
@@ -363,8 +380,10 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
       </g>
 
       {/* Pétalos y centro generados por el arquetipo */}
-      <g className="animate-breathe" style={{ transformOrigin: `${size/2}px ${size/2}px` }}>
-        {renderFlower()}
+      <g transform={`translate(0, -${size * 0.15})`}>
+        <g className="animate-breathe" style={{ transformOrigin: `${size/2}px ${size/2}px` }}>
+          {renderFlower()}
+        </g>
       </g>
     </svg>
   );
