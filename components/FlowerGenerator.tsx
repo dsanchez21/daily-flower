@@ -322,7 +322,7 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
   return (
     <svg
       className="animate-sway"
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`-${size * 0.1} -${size * 0.15} ${size * 1.2} ${size * 1.2}`}
       width={size}
       height={size}
       xmlns="http://www.w3.org/2000/svg"
@@ -330,7 +330,8 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
         margin: '20px auto',
         display: 'block',
         filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.15))',
-        transition: 'all 0.5s ease-in-out'
+        transition: 'all 0.5s ease-in-out',
+        overflow: 'visible'
       }}
     >
       {defs}
