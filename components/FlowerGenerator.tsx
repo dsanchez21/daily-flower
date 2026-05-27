@@ -367,14 +367,14 @@ export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) 
       {/* Hojas orgánicas */}
       <g className="animate-leaf" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))' }}>
         <path
-          d={`M ${size/2 - 14} ${size*0.65} Q ${size/2 - 50} ${size*0.6} ${size/2 - 70} ${size*0.4} Q ${size/2 - 30} ${size*0.35} ${size/2 - 8} ${size*0.55}`}
+          d={`M ${size/2 - 14} ${size*0.8} Q ${size/2 - 50} ${size*0.75} ${size/2 - 70} ${size*0.55} Q ${size/2 - 30} ${size*0.5} ${size/2 - 8} ${size*0.7}`}
           fill="url(#leaf-grad)"
           opacity="0.95"
         />
       </g>
       <g className="animate-leaf" style={{ animationDelay: '0.7s', filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))' }}>
         <path
-          d={`M ${size/2 - 2} ${size*0.75} Q ${size/2 + 40} ${size*0.75} ${size/2 + 60} ${size*0.55} Q ${size/2 + 30} ${size*0.45} ${size/2 + 2} ${size*0.65}`}
+          d={`M ${size/2 + 2} ${size*0.9} Q ${size/2 + 40} ${size*0.9} ${size/2 + 60} ${size*0.7} Q ${size/2 + 30} ${size*0.6} ${size/2 + 0} ${size*0.8}`}
           fill="url(#leaf-grad)"
           opacity="0.95"
         />
