@@ -37,13 +37,14 @@ export default function Home() {
     day: 'numeric'
   });
 
-  // Calcular el tono base de la flor para iluminar el fondo
-  const seed = dayNumber;
+  // Match the flower's curated watercolor palette for background harmony
   const seededRandom = (index: number): number => {
-    const x = Math.sin(seed + index * 13.37) * 10000;
+    const x = Math.sin(dayNumber + index * 13.37) * 10000;
     return x - Math.floor(x);
   };
-  const mainHue = Math.floor(seededRandom(5) * 360);
+  const paletteHues = [350, 268, 18, 218, 38, 138, 328, 4]; // matches FlowerGenerator palettes
+  const paletteIndex = Math.floor(seededRandom(50) * paletteHues.length);
+  const mainHue = paletteHues[paletteIndex];
 
   return (
     <main className="container" style={{ '--hue': mainHue } as React.CSSProperties}>
