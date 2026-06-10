@@ -38,12 +38,19 @@ export default function Home() {
   });
 
   // Match the flower's curated watercolor palette for background harmony
-  const seededRandom = (index: number): number => {
-    const x = Math.sin(dayNumber + index * 13.37) * 10000;
-    return x - Math.floor(x);
+  const seededRandom = (day: number, index: number): number => {
+    let h = ((day * 2654435761) ^ (index * 2246822519)) >>> 0;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = Math.imul(h ^ (h >>> 13), 0x45d9f3b);
+    h = (h ^ (h >>> 16)) >>> 0;
+    return h / 4294967296;
   };
   const paletteHues = [350, 268, 18, 218, 38, 138, 328, 4]; // matches FlowerGenerator palettes
-  const paletteIndex = Math.floor(seededRandom(50) * paletteHues.length);
+  let paletteIndex = Math.floor(seededRandom(dayNumber, 50) * paletteHues.length);
+  const yesterdayPaletteIndex = Math.floor(seededRandom(dayNumber - 1, 50) * paletteHues.length);
+  if (paletteIndex === yesterdayPaletteIndex) {
+    paletteIndex = (paletteIndex + 1) % paletteHues.length;
+  }
   const mainHue = paletteHues[paletteIndex];
 
   return (

@@ -48,19 +48,31 @@ const hsl = (c: HSL, a?: number): string =>
 // ─────────────────────────────────────────────
 
 export default function FlowerGenerator({ dayNumber, size = 200 }: FlowerProps) {
-  // Deterministic seeded random
+  // Deterministic seeded random using integer hash (avoids sin periodicity issues)
   const getSeededRandom = (day: number) => (index: number): number => {
-    const x = Math.sin(day + index * 13.37) * 10000;
-    return x - Math.floor(x);
+    let h = ((day * 2654435761) ^ (index * 2246822519)) >>> 0;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+    h = Math.imul(h ^ (h >>> 13), 0x45d9f3b);
+    h = (h ^ (h >>> 16)) >>> 0;
+    return h / 4294967296;
   };
 
   const sr = getSeededRandom(dayNumber);
 
-  // Palette selection
-  const paletteIndex = Math.floor(sr(50) * PALETTES.length);
+  // Palette selection – ensure today's palette differs from yesterday's
+  const getPaletteIndex = (day: number): number => {
+    const r = getSeededRandom(day);
+    return Math.floor(r(50) * PALETTES.length);
+  };
+
+  let paletteIndex = getPaletteIndex(dayNumber);
+  const yesterdayPalette = getPaletteIndex(dayNumber - 1);
+  if (paletteIndex === yesterdayPalette) {
+    paletteIndex = (paletteIndex + 1) % PALETTES.length;
+  }
   const p = PALETTES[paletteIndex];
 
-  // Archetype selection (6 types)
+  // Archetype selection (6 types) – ensure today's archetype differs from yesterday's
   const archetypeCount = 6;
   const getArchetype = (day: number): number => {
     const r = getSeededRandom(day);
