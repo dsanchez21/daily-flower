@@ -1,36 +1,62 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import FlowerGenerator from '@/components/FlowerGenerator';
 import { getQuoteForDay } from '@/data/quotes';
 
-export default function Home() {
-  const [dayNumber, setDayNumber] = useState(0);
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const [todayDayNumber, setTodayDayNumber] = useState(0);
+  const [viewingDay, setViewingDay] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Calcular el número de días desde una fecha de referencia
+    // Calculate the number of days since the reference date
     const referenceDate = new Date('2026-01-01');
     const today = new Date();
 
-    // Resetear horas para comparar solo fechas
+    // Reset hours to compare only dates
     today.setHours(0, 0, 0, 0);
     referenceDate.setHours(0, 0, 0, 0);
 
     const msPerDay = 24 * 60 * 60 * 1000;
     const days = Math.floor((today.getTime() - referenceDate.getTime()) / msPerDay);
+    const todayNum = Math.max(0, days);
+    setTodayDayNumber(todayNum);
 
-    setDayNumber(Math.max(0, days));
+    // Check for ?day= query param
+    const dayParam = searchParams.get('day');
+    if (dayParam !== null) {
+      const parsed = parseInt(dayParam, 10);
+      if (!isNaN(parsed) && parsed >= 0 && parsed <= todayNum) {
+        setViewingDay(parsed);
+      } else {
+        setViewingDay(null);
+      }
+    } else {
+      setViewingDay(null);
+    }
+
     setMounted(true);
-  }, []);
+  }, [searchParams]);
 
   if (!mounted) {
     return null;
   }
 
+  const dayNumber = viewingDay !== null ? viewingDay : todayDayNumber;
+  const isToday = dayNumber === todayDayNumber;
+  const isViewingPast = viewingDay !== null && viewingDay !== todayDayNumber;
+
   const quote = getQuoteForDay(dayNumber);
-  const today = new Date();
-  const dateString = today.toLocaleDateString('es-ES', {
+
+  // Calculate date for the displayed day
+  const referenceDate = new Date('2026-01-01');
+  referenceDate.setHours(0, 0, 0, 0);
+  const displayDate = new Date(referenceDate);
+  displayDate.setDate(displayDate.getDate() + dayNumber);
+  const dateString = displayDate.toLocaleDateString('es-ES', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -53,25 +79,97 @@ export default function Home() {
   }
   const mainHue = paletteHues[paletteIndex];
 
+  const canGoPrev = dayNumber > 0;
+  const canGoNext = dayNumber < todayDayNumber;
+
+  const prevUrl = canGoPrev
+    ? (dayNumber - 1 === todayDayNumber ? './' : `?day=${dayNumber - 1}`)
+    : undefined;
+  const nextUrl = canGoNext
+    ? (dayNumber + 1 === todayDayNumber ? './' : `?day=${dayNumber + 1}`)
+    : undefined;
+
   return (
     <main className="container" style={{ '--hue': mainHue } as React.CSSProperties}>
-      {/* Fondo Dinámico con Blobs */}
+      {/* Dynamic Background Blobs */}
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
       <div className="blob blob-3"></div>
 
-      {/* Tarjeta de Cristal */}
+      {/* Glass Card */}
       <div className="content">
-        <h1 className="title">Tu Flor del Día</h1>
-        <p className="date">{dateString}</p>
+        {/* Back to today banner when viewing past */}
+        {isViewingPast && (
+          <a href="./" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginBottom: '16px',
+            padding: '5px 14px',
+            borderRadius: '999px',
+            background: 'linear-gradient(135deg, rgba(244, 114, 182, 0.15), rgba(192, 132, 252, 0.15))',
+            border: '1px solid rgba(244, 114, 182, 0.2)',
+            color: '#94a3b8',
+            fontSize: '0.78em',
+            fontWeight: 600,
+            textDecoration: 'none',
+            fontFamily: 'var(--font-outfit), sans-serif',
+            transition: 'all 0.25s ease',
+            letterSpacing: '0.3px',
+          }}>
+            ← Volver a hoy
+          </a>
+        )}
 
-        <FlowerGenerator dayNumber={dayNumber} size={300} />
+        <h1 className="title">
+          {isToday ? 'Tu Flor del Día' : 'Tu Flor'}
+        </h1>
+
+        {/* Day navigation */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '16px',
+          marginBottom: '24px',
+        }}>
+          <a
+            href={prevUrl}
+            className="nav-btn"
+            aria-label="Día anterior"
+            aria-disabled={!canGoPrev}
+            style={!canGoPrev ? { opacity: 0.3, pointerEvents: 'none' } : {}}
+          >
+            ‹
+          </a>
+
+          <p className="date" style={{ margin: 0 }}>{dateString}</p>
+
+          <a
+            href={nextUrl}
+            className="nav-btn"
+            aria-label="Día siguiente"
+            aria-disabled={!canGoNext}
+            style={!canGoNext ? { opacity: 0.3, pointerEvents: 'none' } : {}}
+          >
+            ›
+          </a>
+        </div>
+
+        <FlowerGenerator key={dayNumber} dayNumber={dayNumber} size={300} />
 
         <div className="quote-container">
           <blockquote className="quote">
             {quote.text}
           </blockquote>
           {quote.author && <div className="author">— {quote.author}</div>}
+        </div>
+
+        {/* Garden link */}
+        <div style={{ marginTop: '32px' }}>
+          <a href="./history" className="garden-link">
+            🌿 Mi Jardín
+          </a>
         </div>
 
         <p className="footer">
@@ -226,5 +324,16 @@ export default function Home() {
         }
       `}</style>
     </main>
+  );
+}
+
+// Wrap in Suspense boundary for useSearchParams
+import { Suspense } from 'react';
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
   );
 }
