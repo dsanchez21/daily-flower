@@ -13,7 +13,7 @@ function HomeContent() {
 
   useEffect(() => {
     // Calculate the number of days since the reference date
-    const referenceDate = new Date('2026-01-01');
+    const referenceDate = new Date(2026, 0, 1);
     const today = new Date();
 
     // Reset hours to compare only dates
@@ -52,7 +52,7 @@ function HomeContent() {
   const quote = getQuoteForDay(dayNumber);
 
   // Calculate date for the displayed day
-  const referenceDate = new Date('2026-01-01');
+  const referenceDate = new Date(2026, 0, 1);
   referenceDate.setHours(0, 0, 0, 0);
   const displayDate = new Date(referenceDate);
   displayDate.setDate(displayDate.getDate() + dayNumber);

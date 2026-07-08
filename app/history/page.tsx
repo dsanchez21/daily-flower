@@ -6,12 +6,12 @@ import FlowerCard from '@/components/FlowerCard';
 export default function HistoryPage() {
   const [todayDayNumber, setTodayDayNumber] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const referenceDate = new Date('2026-01-01');
+  const referenceDate = new Date(2026, 0, 1);
 
   useEffect(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const ref = new Date('2026-01-01');
+    const ref = new Date(2026, 0, 1);
     ref.setHours(0, 0, 0, 0);
 
     const msPerDay = 24 * 60 * 60 * 1000;
