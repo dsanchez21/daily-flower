@@ -21,7 +21,7 @@ function HomeContent() {
     referenceDate.setHours(0, 0, 0, 0);
 
     const msPerDay = 24 * 60 * 60 * 1000;
-    const days = Math.floor((today.getTime() - referenceDate.getTime()) / msPerDay);
+    const days = Math.round((today.getTime() - referenceDate.getTime()) / msPerDay);
     const todayNum = Math.max(0, days);
     setTodayDayNumber(todayNum);
 

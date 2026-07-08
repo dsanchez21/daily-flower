@@ -15,7 +15,7 @@ export default function HistoryPage() {
     ref.setHours(0, 0, 0, 0);
 
     const msPerDay = 24 * 60 * 60 * 1000;
-    const days = Math.floor((today.getTime() - ref.getTime()) / msPerDay);
+    const days = Math.round((today.getTime() - ref.getTime()) / msPerDay);
     setTodayDayNumber(Math.max(0, days));
     setMounted(true);
   }, []);
